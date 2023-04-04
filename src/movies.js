@@ -3,68 +3,68 @@
 // How could you "clean" a bit this array and make it unified (without duplicates)?
 
 function getAllDirectors(moviesArray) {
-    return moviesArray.map(movie => movie.director);
+  return moviesArray.map((movie) => movie.director);
 }
-
 
 // Iteration 2: Steven Spielberg. The best? - How many drama movies did STEVEN SPIELBERG direct?
 function howManyMovies(moviesArray) {
-    return moviesArray.filter(movie => {
-      return movie.director === 'Steven Spielberg' && movie.genre.includes('Drama');
-    }).length;
-  }
-  
+  return moviesArray.filter((movie) => {
+    return (
+      movie.director === "Steven Spielberg" && movie.genre.includes("Drama")
+    );
+  }).length;
+}
 
 // Iteration 3: All scores average - Get the average of all scores with 2 decimals
 function scoresAverage(moviesArray) {
-    if(moviesArray.length === 0){
-      return 0;
-    }
-  
-    const sumScores = moviesArray.reduce((accumulator, currentMovie) => {
-      //if statement checks if there is no score
-      if (!currentMovie.score){
-        return accumulator + 0;
-      }
-        return accumulator + currentMovie.score;
-    }, 0)
-    return Number((sumScores / moviesArray.length).toFixed(2));
+  if (moviesArray.length === 0) {
+    return 0;
   }
+
+  const sumScores = moviesArray.reduce((accumulator, currentMovie) => {
+    //if statement checks if there is no score
+    if (!currentMovie.score) {
+      return accumulator + 0;
+    }
+    return accumulator + currentMovie.score;
+  }, 0);
+  return Number((sumScores / moviesArray.length).toFixed(2));
+}
 
 // Iteration 4: Drama movies - Get the average of Drama Movies
 function dramaMoviesScore(moviesArray) {
-    const dramas = moviesArray.filter((movie) => {
-      return (movie.genre.includes('Drama'));
-    });
-    //LETS GO BACK HERE LATER FOR LEARNING PURPOSES (.reduce)
-    return scoresAverage(dramas);
-  }
+  const dramas = moviesArray.filter((movie) => {
+    return movie.genre.includes("Drama");
+  });
+  //LETS GO BACK HERE LATER FOR LEARNING PURPOSES (.reduce)
+  return scoresAverage(dramas);
+}
 
 // Iteration 5: Ordering by year - Order by year, ascending (in growing order)
 function orderByYear(moviesArray) {
-    let newArray = [...moviesArray];
-    newArray.sort(function (a, b) {
-      if (a.year === b.year){
-        // return a.title - b.title;
-        return a.title.localeCompare(b.title);
-      }
-      return a.year - b.year;
-    });
-    return newArray;
-  }
+  let newArray = [...moviesArray];
+  newArray.sort(function (a, b) {
+    if (a.year === b.year) {
+      // return a.title - b.title;
+      return a.title.localeCompare(b.title);
+    }
+    return a.year - b.year;
+  });
+  return newArray;
+}
 
 // Iteration 6: Alphabetic Order - Order by title and print the first 20 titles
 function orderAlphabetically(moviesArray) {
-    let newArray = [...moviesArray];
-    newArray.sort(function (a, b) {
-      return a.title.localeCompare(b.title);
-    });
-    newArray = newArray.slice(0, 20);
-    newArray = newArray.map((movie) => {
-      return movie.title;
-    })
-    return newArray;
-  }
+  let newArray = [...moviesArray];
+  newArray.sort(function (a, b) {
+    return a.title.localeCompare(b.title);
+  });
+  newArray = newArray.slice(0, 20);
+  newArray = newArray.map((movie) => {
+    return movie.title;
+  });
+  return newArray;
+}
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
 function turnHoursToMinutes(moviesArray) {
@@ -86,7 +86,30 @@ function turnHoursToMinutes(moviesArray) {
   });
 }
 
-
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
 function bestYearAvg(moviesArray) {
+  let moviesByYears = {};
+  let largestScoreYearAndAverageScore;
+  if (moviesArray.length === 0) {
+    return null;
+  }
+  moviesArray.forEach((movie) => {
+    let movieYear = `${movie.year}`;
+    if (!Object.keys(moviesByYears).includes(movieYear)) {
+      moviesByYears[movieYear] = [];
+    }
+    moviesByYears[movieYear].push(movie);
+  });
+
+  Object.keys(moviesByYears).forEach((key) => {
+    moviesByYears[key] = scoresAverage(moviesByYears[key]);
+    if (
+      !largestScoreYearAndAverageScore ||
+      moviesByYears[key] > largestScoreYearAndAverageScore[1]
+    ) {
+      largestScoreYearAndAverageScore = [key, moviesByYears[key]];
+    }
+  });
+
+  return `The best year was ${largestScoreYearAndAverageScore[0]} with an average score of ${largestScoreYearAndAverageScore[1]}`;
 }
